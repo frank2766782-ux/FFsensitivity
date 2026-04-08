@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF SENSI PRO – Free Fire Sensitivity & Character Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ff-orange: #FF6B00;
+    --ff-gold: #FFB800;
+    --ff-red: #FF2D2D;
+    --ff-dark: #0A0A0F;
+    --ff-darker: #060608;
+    --ff-card: #111118;
+    --ff-border: #2a2a3a;
+    --ff-text: #E8E8F0;
+    --ff-muted: #8888AA;
+    --ff-glow: rgba(255,107,0,0.4);
+    --ff-glow2: rgba(255,184,0,0.3);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ff-darker);
+    color:var(--ff-text);
+    font-family:'Exo 2',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:#0a0a0f;}
+  ::-webkit-scrollbar-thumb{background:var(--ff-orange);border-radius:3px;}
+
+  /* BG GRID */
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image:
+      linear-gradient(rgba(255,107,0,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,107,0,0.04) 1px,transparent 1px);
+    background-size:40px 40px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* NAVBAR */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    background:rgba(6,6,8,0.92);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--ff-border);
+    padding:0 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;
+  }
+  .logo{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.4rem;
+    font-weight:900;
+    background:linear-gradient(135deg,var(--ff-orange),var(--ff-gold));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    letter-spacing:2px;
+  }
+  .logo span{color:var(--ff-red);-webkit-text-fill-color:var(--ff-red);}
+  .nav-links{display:flex;gap:6px;align-items:center;}
+  .nav-btn{
+    background:transparent;
+    border:1px solid var(--ff-border);
+    color:var(--ff-muted);
+    padding:7px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:'Exo 2',sans-serif;
+    font-size:0.82rem;
+    font-weight:600;
+    letter-spacing:0.5px;
+    transition:all 0.2s;
+    text-transform:uppercase;
+  }
+  .nav-btn:hover,.nav-btn.active{
+    background:var(--ff-orange);
+    border-color:var(--ff-orange);
+    color:#fff;
+    box-shadow:0 0 15px var(--ff-glow);
+  }
+  .admin-btn{
+    background:linear-gradient(135deg,#7c3aed,#4f46e5);
+    border-color:#7c3aed;
+    color:#fff;
+  }
+  .admin-btn:hover{
+    background:linear-gradient(135deg,#9333ea,#6366f1);
+    box-shadow:0 0 15px rgba(124,58,237,0.5);
+  }
+
+  /* SECTIONS */
+  section{
+    min-height:100vh;
+    padding:80px 24px 60px;
+    position:relative;
+    z-index:1;
+    display:none;
+  }
+  section.active{display:block;}
+
+  .section-inner{max-width:1100px;margin:0 auto;}
+
+  /* HERO */
+  #home{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:radial-gradient(ellipse at 50% 0%,rgba(255,107,0,0.12) 0%,transparent 70%);
+  }
+  #home.active{display:flex;flex-direction:column;}
+  .hero-badge{
+    display:inline-block;
+    background:rgba(255,107,0,0.12);
+    border:1px solid rgba(255,107,0,0.3);
+    color:var(--ff-orange);
+    padding:6px 18px;
+    border-radius:50px;
+    font-size:0.78rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:24px;
+    animation:pulse-border 2s infinite;
+  }
+  @keyframes pulse-border{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,107,0,0.3);}
+    50%{box-shadow:0 0 0 8px rgba(255,107,0,0);}
+  }
+  .hero-title{
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(2.2rem,6vw,4.5rem);
+    font-weight:900;
+    line-height:1.1;
+    margin-bottom:16px;
+  }
+  .hero-title .line1{
+    background:linear-gradient(135deg,#fff 0%,#ccc 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero-title .line2{
+    background:linear-gradient(135deg,var(--ff-orange),var(--ff-gold));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero-sub{
+    font-size:1.05rem;
+    color:var(--ff-muted);
+    max-width:600px;
+    margin:0 auto 40px;
+    line-height:1.7;
+  }
+  .hero-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px;
+    max-width:800px;
+    width:100%;
+    margin-bottom:50px;
+  }
+  .hero-card{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:12px;
+    padding:24px 16px;
+    cursor:pointer;
+    transition:all 0.3s;
+    text-align:center;
+  }
+  .hero-card:hover{
+    border-color:var(--ff-orange);
+    box-shadow:0 0 25px var(--ff-glow);
+    transform:translateY(-4px);
+  }
+  .hero-card .icon{font-size:2.2rem;margin-bottom:10px;}
+  .hero-card .title{font-weight:700;font-size:0.95rem;color:#fff;margin-bottom:4px;}
+  .hero-card .desc{font-size:0.78rem;color:var(--ff-muted);}
+
+  /* SECTION HEADER */
+  .sec-header{margin-bottom:36px;text-align:center;}
+  .sec-tag{
+    display:inline-block;
+    background:rgba(255,107,0,0.1);
+    border:1px solid rgba(255,107,0,0.25);
+    color:var(--ff-orange);
+    padding:4px 14px;
+    border-radius:50px;
+    font-size:0.72rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .sec-title{
+    font-family:'Orbitron',sans-serif;
+    font-size:clamp(1.6rem,4vw,2.6rem);
+    font-weight:900;
+    background:linear-gradient(135deg,#fff,#aaa);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:10px;
+  }
+  .sec-desc{color:var(--ff-muted);font-size:0.92rem;max-width:600px;margin:0 auto;}
+
+  /* SENSITIVITY SECTION */
+  .search-box{
+    display:flex;gap:12px;
+    max-width:600px;
+    margin:0 auto 40px;
+  }
+  .search-input{
+    flex:1;
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    color:#fff;
+    padding:14px 20px;
+    border-radius:10px;
+    font-family:'Exo 2',sans-serif;
+    font-size:1rem;
+    outline:none;
+    transition:border-color 0.2s;
+  }
+  .search-input:focus{border-color:var(--ff-orange);box-shadow:0 0 0 3px rgba(255,107,0,0.15);}
+  .search-input::placeholder{color:var(--ff-muted);}
+  .search-btn{
+    background:linear-gradient(135deg,var(--ff-orange),#ff8c00);
+    border:none;
+    color:#fff;
+    padding:14px 28px;
+    border-radius:10px;
+    cursor:pointer;
+    font-family:'Exo 2',sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    letter-spacing:1px;
+    transition:all 0.2s;
+    white-space:nowrap;
+  }
+  .search-btn:hover{transform:scale(1.04);box-shadow:0 0 20px var(--ff-glow);}
+
+  /* SUGGESTIONS DROPDOWN */
+  .search-wrap{position:relative;flex:1;}
+  .suggestions{
+    position:absolute;top:100%;left:0;right:0;
+    background:#1a1a28;
+    border:1px solid var(--ff-border);
+    border-top:none;
+    border-radius:0 0 10px 10px;
+    max-height:220px;
+    overflow-y:auto;
+    z-index:100;
+    display:none;
+  }
+  .suggestions.open{display:block;}
+  .sugg-item{
+    padding:10px 18px;
+    cursor:pointer;
+    font-size:0.9rem;
+    transition:background 0.15s;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+  }
+  .sugg-item:hover{background:rgba(255,107,0,0.12);color:var(--ff-orange);}
+
+  /* RESULT CARD */
+  .result-card{
+    max-width:700px;
+    margin:0 auto;
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:16px;
+    overflow:hidden;
+    animation:slideUp 0.4s ease;
+  }
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .result-header{
+    background:linear-gradient(135deg,rgba(255,107,0,0.2),rgba(255,184,0,0.1));
+    border-bottom:1px solid var(--ff-border);
+    padding:20px 28px;
+    display:flex;align-items:center;gap:16px;
+  }
+  .result-icon{
+    width:56px;height:56px;
+    background:linear-gradient(135deg,var(--ff-orange),var(--ff-gold));
+    border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;
+    flex-shrink:0;
+  }
+  .result-phone{font-size:1.3rem;font-weight:700;color:#fff;}
+  .result-chip{color:var(--ff-gold);font-size:0.9rem;margin-top:2px;}
+  .sensi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:0;
+  }
+  .sensi-item{
+    padding:18px 20px;
+    border-right:1px solid var(--ff-border);
+    border-bottom:1px solid var(--ff-border);
+    text-align:center;
+  }
+  .sensi-item:nth-child(3n){border-right:none;}
+  .sensi-label{font-size:0.72rem;color:var(--ff-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+  .sensi-value{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.4rem;
+    font-weight:700;
+  }
+  .sensi-value.high{color:#00ff88;}
+  .sensi-value.mid{color:var(--ff-gold);}
+  .sensi-value.low{color:var(--ff-orange);}
+  .sensi-tip{
+    padding:16px 28px;
+    background:rgba(255,107,0,0.05);
+    font-size:0.85rem;
+    color:var(--ff-muted);
+    border-top:1px solid var(--ff-border);
+  }
+  .sensi-tip strong{color:var(--ff-orange);}
+
+  /* PHONE GRID */
+  .phone-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:12px;
+    margin-top:24px;
+  }
+  .phone-card{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:10px;
+    padding:14px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .phone-card:hover{border-color:var(--ff-orange);box-shadow:0 0 12px var(--ff-glow);}
+  .phone-brand{font-size:0.7rem;color:var(--ff-orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+  .phone-name{font-size:0.88rem;font-weight:600;color:#fff;margin-bottom:6px;}
+  .phone-chip-badge{
+    display:inline-block;
+    background:rgba(255,184,0,0.1);
+    border:1px solid rgba(255,184,0,0.2);
+    color:var(--ff-gold);
+    padding:2px 8px;
+    border-radius:4px;
+    font-size:0.7rem;
+  }
+
+  /* FILTER BAR */
+  .filter-bar{
+    display:flex;gap:8px;flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .filter-chip{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    color:var(--ff-muted);
+    padding:6px 14px;
+    border-radius:50px;
+    font-size:0.78rem;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-family:'Exo 2',sans-serif;
+  }
+  .filter-chip.active,.filter-chip:hover{
+    background:var(--ff-orange);
+    border-color:var(--ff-orange);
+    color:#fff;
+  }
+
+  /* CHARACTER COMBOS */
+  .combo-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:20px;
+  }
+  .combo-card{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:16px;
+    overflow:hidden;
+    transition:all 0.3s;
+    cursor:pointer;
+  }
+  .combo-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+  .combo-header{
+    padding:18px 20px 14px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .combo-icon{
+    width:48px;height:48px;
+    border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.5rem;
+    flex-shrink:0;
+  }
+  .rusher .combo-icon{background:linear-gradient(135deg,#ff2d2d,#ff6b00);}
+  .sniper .combo-icon{background:linear-gradient(135deg,#0066ff,#00ccff);}
+  .support .combo-icon{background:linear-gradient(135deg,#00cc66,#00ff88);}
+  .speed .combo-icon{background:linear-gradient(135deg,#ffb800,#ff6b00);}
+  .bomber .combo-icon{background:linear-gradient(135deg,#9b59b6,#e74c3c);}
+  .combo-type{
+    font-family:'Orbitron',sans-serif;
+    font-size:0.85rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:2px;
+  }
+  .rusher .combo-type{color:#ff6b00;}
+  .sniper .combo-type{color:#00ccff;}
+  .support .combo-type{color:#00ff88;}
+  .speed .combo-type{color:#ffb800;}
+  .bomber .combo-type{color:#9b59b6;}
+  .combo-desc-short{font-size:0.8rem;color:var(--ff-muted);}
+  .combo-chars{
+    display:flex;flex-wrap:wrap;gap:8px;
+    padding:0 20px 14px;
+  }
+  .char-tag{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:5px 12px;
+    border-radius:6px;
+    font-size:0.78rem;
+    color:#ddd;
+    font-weight:600;
+  }
+  .combo-body{
+    padding:14px 20px 18px;
+    border-top:1px solid var(--ff-border);
+    background:rgba(0,0,0,0.2);
+  }
+  .skill-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .skill-list li{
+    display:flex;align-items:flex-start;gap:8px;
+    font-size:0.82rem;
+    color:var(--ff-muted);
+    line-height:1.5;
+  }
+  .skill-list li::before{
+    content:'▸';
+    color:var(--ff-orange);
+    margin-top:1px;
+    flex-shrink:0;
+  }
+  .skill-list li strong{color:#ccc;}
+  .combo-rating{
+    display:flex;gap:4px;
+    padding:12px 20px;
+    border-top:1px solid var(--ff-border);
+    align-items:center;
+  }
+  .rating-star{color:#333;font-size:0.9rem;}
+  .rating-star.filled{color:var(--ff-gold);}
+  .rating-label{font-size:0.72rem;color:var(--ff-muted);margin-left:6px;text-transform:uppercase;letter-spacing:1px;}
+
+  /* COMBO TABS */
+  .combo-tabs{
+    display:flex;gap:8px;flex-wrap:wrap;
+    margin-bottom:28px;justify-content:center;
+  }
+  .combo-tab{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    color:var(--ff-muted);
+    padding:10px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    font-family:'Exo 2',sans-serif;
+    font-weight:600;
+    font-size:0.85rem;
+    letter-spacing:0.5px;
+    transition:all 0.2s;
+    text-transform:uppercase;
+  }
+  .combo-tab:hover,.combo-tab.active{color:#fff;}
+  .combo-tab[data-tab="rusher"].active{background:#ff2d2d;border-color:#ff2d2d;box-shadow:0 0 15px rgba(255,45,45,0.4);}
+  .combo-tab[data-tab="sniper"].active{background:#0066ff;border-color:#0066ff;box-shadow:0 0 15px rgba(0,102,255,0.4);}
+  .combo-tab[data-tab="support"].active{background:#00cc66;border-color:#00cc66;box-shadow:0 0 15px rgba(0,204,102,0.4);}
+  .combo-tab[data-tab="speed"].active{background:#ffb800;border-color:#ffb800;box-shadow:0 0 15px rgba(255,184,0,0.4);}
+  .combo-tab[data-tab="bomber"].active{background:#9b59b6;border-color:#9b59b6;box-shadow:0 0 15px rgba(155,89,182,0.4);}
+  .combo-tab[data-tab="all"].active{background:var(--ff-orange);border-color:var(--ff-orange);box-shadow:0 0 15px var(--ff-glow);}
+
+  /* ADMIN DASHBOARD */
+  #admin{
+    min-height:100vh;
+    display:none;
+  }
+  #admin.active{display:block;}
+  .admin-login{
+    max-width:420px;
+    margin:80px auto 0;
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:20px;
+    padding:40px;
+    text-align:center;
+  }
+  .admin-login-icon{font-size:3rem;margin-bottom:16px;}
+  .admin-login h2{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.4rem;
+    margin-bottom:8px;
+    color:#fff;
+  }
+  .admin-login p{color:var(--ff-muted);font-size:0.85rem;margin-bottom:28px;}
+  .form-group{margin-bottom:16px;text-align:left;}
+  .form-group label{
+    display:block;
+    font-size:0.78rem;
+    color:var(--ff-muted);
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .form-input{
+    width:100%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--ff-border);
+    color:#fff;
+    padding:12px 16px;
+    border-radius:8px;
+    font-family:'Exo 2',sans-serif;
+    font-size:0.95rem;
+    outline:none;
+    transition:border-color 0.2s;
+  }
+  .form-input:focus{border-color:var(--ff-orange);}
+  .btn-primary{
+    width:100%;
+    background:linear-gradient(135deg,var(--ff-orange),#ff8c00);
+    border:none;
+    color:#fff;
+    padding:14px;
+    border-radius:8px;
+    font-family:'Exo 2',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    cursor:pointer;
+    letter-spacing:1px;
+    margin-top:8px;
+    transition:all 0.2s;
+  }
+  .btn-primary:hover{transform:scale(1.02);box-shadow:0 0 20px var(--ff-glow);}
+  .admin-error{
+    background:rgba(255,45,45,0.1);
+    border:1px solid rgba(255,45,45,0.3);
+    color:#ff6b6b;
+    padding:10px 14px;
+    border-radius:6px;
+    font-size:0.83rem;
+    margin-top:12px;
+    display:none;
+  }
+
+  /* ADMIN PANEL */
+  .admin-panel{display:none;}
+  .admin-panel.active{display:block;}
+  .admin-topbar{
+    background:var(--ff-card);
+    border-bottom:1px solid var(--ff-border);
+    padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:32px;
+    border-radius:12px;
+  }
+  .admin-topbar h2{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.1rem;
+    color:#fff;
+  }
+  .logout-btn{
+    background:rgba(255,45,45,0.12);
+    border:1px solid rgba(255,45,45,0.3);
+    color:#ff6b6b;
+    padding:7px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:'Exo 2',sans-serif;
+    font-size:0.82rem;
+    font-weight:600;
+    transition:all 0.2s;
+  }
+  .logout-btn:hover{background:rgba(255,45,45,0.25);}
+  .admin-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+  }
+  @media(max-width:768px){.admin-grid{grid-template-columns:1fr;}}
+  .admin-card{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:14px;
+    padding:24px;
+  }
+  .admin-card h3{
+    font-family:'Orbitron',sans-serif;
+    font-size:0.95rem;
+    color:var(--ff-orange);
+    margin-bottom:20px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  .admin-stat-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-bottom:24px;
+  }
+  .admin-stat{
+    background:rgba(255,107,0,0.06);
+    border:1px solid rgba(255,107,0,0.15);
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+  }
+  .admin-stat .num{
+    font-family:'Orbitron',sans-serif;
+    font-size:1.8rem;
+    font-weight:700;
+    color:var(--ff-gold);
+  }
+  .admin-stat .lbl{font-size:0.72rem;color:var(--ff-muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .post-list{display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto;}
+  .post-item{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--ff-border);
+    border-radius:8px;
+    padding:12px 14px;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  }
+  .post-item-text{flex:1;}
+  .post-item-title{font-size:0.88rem;font-weight:600;color:#fff;margin-bottom:2px;}
+  .post-item-meta{font-size:0.72rem;color:var(--ff-muted);}
+  .post-type-badge{
+    padding:3px 8px;
+    border-radius:4px;
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    flex-shrink:0;
+  }
+  .badge-tip{background:rgba(0,204,102,0.15);color:#00cc66;border:1px solid rgba(0,204,102,0.2);}
+  .badge-update{background:rgba(0,102,255,0.15);color:#4da6ff;border:1px solid rgba(0,102,255,0.2);}
+  .badge-event{background:rgba(255,184,0,0.15);color:var(--ff-gold);border:1px solid rgba(255,184,0,0.2);}
+  .del-btn{
+    background:none;border:none;color:var(--ff-muted);cursor:pointer;font-size:1rem;
+    padding:2px 4px;transition:color 0.2s;
+  }
+  .del-btn:hover{color:#ff4444;}
+
+  /* COMMUNITY FEED */
+  .feed-section{
+    max-width:700px;margin:0 auto;
+  }
+  .feed-item{
+    background:var(--ff-card);
+    border:1px solid var(--ff-border);
+    border-radius:14px;
+    padding:20px 24px;
+    margin-bottom:14px;
+    animation:slideUp 0.3s ease;
+  }
+  .feed-meta{
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:10px;
+  }
+  .feed-avatar{
+    width:36px;height:36px;
+    background:linear-gradient(135deg,var(--ff-orange),var(--ff-gold));
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:0.9rem;
+    font-weight:700;
+    color:#fff;
+    flex-shrink:0;
+  }
+  .feed-author{font-weight:600;font-size:0.88rem;color:#fff;}
+  .feed-time{font-size:0.72rem;color:var(--ff-muted);}
+  .feed-title{font-size:1rem;font-weight:700;color:#fff;margin-bottom:6px;}
+  .feed-content{font-size:0.88rem;color:var(--ff-muted);line-height:1.6;}
+
+  /* MOBILE */
+  @media(max-width:600px){
+    .nav-links .nav-btn span{display:none;}
+    .hero-cards{grid-template-columns:1fr 1fr;}
+    .admin-grid{grid-template-columns:1fr;}
+    .sensi-grid{grid-template-columns:repeat(2,1fr);}
+    .combo-grid{grid-template-columns:1fr;}
+    .phone-grid{grid-template-columns:repeat(2,1fr);}
+    nav{padding:0 14px;}
+    .logo{font-size:1.1rem;}
+    .nav-btn{padding:6px 10px;font-size:0.75rem;}
+  }
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:24px;right:24px;
+    background:#1a2a1a;
+    border:1px solid #00cc66;
+    color:#00ff88;
+    padding:12px 20px;
+    border-radius:8px;
+    font-size:0.85rem;
+    z-index:9999;
+    animation:fadeInOut 3s ease forwards;
+    pointer-events:none;
+  }
+  @keyframes fadeInOut{
+    0%{opacity:0;transform:translateY(10px);}
+    15%,85%{opacity:1;transform:translateY(0);}
+    100%{opacity:0;transform:translateY(10px);}
+  }
+
+  /* LOADER */
+  .loader{
+    display:flex;align-items:center;justify-content:center;
+    gap:8px;padding:40px;
+    color:var(--ff-muted);font-size:0.9rem;
+  }
+  .loader::before{
+    content:'';
+    width:20px;height:20px;
+    border:2px solid var(--ff-border);
+    border-top-color:var(--ff-orange);
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* NO RESULT */
+  .no-result{
+    text-align:center;padding:60px 20px;
+    color:var(--ff-muted);
+  }
+  .no-result .emoji{font-size:3rem;margin-bottom:12px;}
+  .no-result p{font-size:0.9rem;}
+
+  .select-input{
+    width:100%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--ff-border);
+    color:#fff;
+    padding:12px 16px;
+    border-radius:8px;
+    font-family:'Exo 2',sans-serif;
+    font-size:0.95rem;
+    outline:none;
+    margin-bottom:12px;
+  }
+  .select-input option{background:#1a1a28;}
+  textarea.form-input{resize:vertical;min-height:100px;}
+
+  .phone-count-badge{
+    display:inline-block;
+    background:rgba(255,107,0,0.1);
+    border:1px solid rgba(255,107,0,0.2);
+    color:var(--ff-orange);
+    padding:4px 12px;
+    border-radius:50px;
+    font-size:0.75rem;
+    letter-spacing:1px;
+    margin-bottom:20px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">FF<span>SENSI</span> PRO</div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showSection('home')" data-section="home">🏠 <span>Home</span></button>
+    <button class="nav-btn" onclick="showSection('sensitivity')" data-section="sensitivity">📱 <span>Sensi</span></button>
+    <button class="nav-btn" onclick="showSection('combos')" data-section="combos">⚔️ <span>Combos</span></button>
+    <button class="nav-btn" onclick="showSection('feed')" data-section="feed">📢 <span>News</span></button>
+    <button class="nav-btn admin-btn" onclick="showSection('admin')" data-section="admin">🔐 <span>Admin</span></button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="active">
+  <div class="section-inner">
+    <div class="hero-badge">🔥 Free Fire Sensitivity Hub</div>
+    <h1 class="hero-title">
+      <div class="line1">MASTER YOUR</div>
+      <div class="line2">SENSITIVITY</div>
+    </h1>
+    <p class="hero-sub">Find the perfect sensitivity settings for your phone, discover top character combinations, and dominate every match.</p>
+    <div class="hero-cards">
+      <div class="hero-card" onclick="showSection('sensitivity')">
+        <div class="icon">📱</div>
+        <div class="title">Phone Sensitivity</div>
+        <div class="desc">500+ phones with chip info & optimized sensitivity values</div>
+      </div>
+      <div class="hero-card" onclick="showSection('combos')">
+        <div class="icon">⚔️</div>
+        <div class="title">Character Combos</div>
+        <div class="desc">Best combos for Rusher, Sniper, Support, Speed & Bomber</div>
+      </div>
+      <div class="hero-card" onclick="showSection('feed')">
+        <div class="icon">📢</div>
+        <div class="title">Tips & News</div>
+        <div class="desc">Latest updates, tips & tricks from the community</div>
+      </div>
+      <div class="hero-card" onclick="showSection('admin')">
+        <div class="icon">🛡️</div>
+        <div class="title">Admin Panel</div>
+        <div class="desc">Post tips, updates & manage website content</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SENSITIVITY -->
+<section id="sensitivity">
+  <div class="section-inner">
+    <div class="sec-header">
+      <div class="sec-tag">📱 Phone Database</div>
+      <h2 class="sec-title">Find Your Sensitivity</h2>
+      <p class="sec-desc">Search any phone model to get its chipset info and the perfect Free Fire sensitivity settings.</p>
+    </div>
+
+    <div class="search-box">
+      <div class="search-wrap">
+        <input class="search-input" id="phoneSearch" type="text" placeholder="e.g. Samsung Galaxy A54, iPhone 14, Redmi Note 12..." autocomplete="off">
+        <div class="suggestions" id="suggestionsList"></div>
+      </div>
+      <button class="search-btn" onclick="doSearch()">SEARCH</button>
+    </div>
+
+    <div id="sensiResult"></div>
+
+    <div style="margin-top:48px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+        <h3 style="font-family:'Orbitron',sans-serif;font-size:1.1rem;color:#fff;">All Phones</h3>
+        <span class="phone-count-badge" id="phoneCountBadge">Loading...</span>
+      </div>
+      <div class="filter-bar" id="brandFilters"></div>
+      <div class="phone-grid" id="phoneGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTER COMBOS -->
+<section id="combos">
+  <div class="section-inner">
+    <div class="sec-header">
+      <div class="sec-tag">⚔️ Character Combos</div>
+      <h2 class="sec-title">Best Character Combinations</h2>
+      <p class="sec-desc">Optimized character combos for every playstyle — with full ability explanations.</p>
+    </div>
+    <div class="combo-tabs" id="comboTabs">
+      <button class="combo-tab active" data-tab="all" onclick="filterCombos('all')">All</button>
+      <button class="combo-tab" data-tab="rusher" onclick="filterCombos('rusher')">🔴 Rusher</button>
+      <button class="combo-tab" data-tab="sniper" onclick="filterCombos('sniper')">🔵 Sniper</button>
+      <button class="combo-tab" data-tab="support" onclick="filterCombos('support')">🟢 Support</button>
+      <button class="combo-tab" data-tab="speed" onclick="filterCombos('speed')">🟡 Speed</button>
+      <button class="combo-tab" data-tab="bomber" onclick="filterCombos('bomber')">🟣 Bomber</button>
+    </div>
+    <div class="combo-grid" id="comboGrid"></div>
+  </div>
+</section>
+
+<!-- NEWS FEED -->
+<section id="feed">
+  <div class="section-inner">
+    <div class="sec-header">
+      <div class="sec-tag">📢 Community</div>
+      <h2 class="sec-title">Tips & Updates</h2>
+      <p class="sec-desc">Latest posts, tips, and updates from the admin team.</p>
+    </div>
+    <div class="feed-section" id="feedContainer">
+      <div class="loader">Loading posts...</div>
+    </div>
+  </div>
+</section>
+
+<!-- ADMIN -->
+<section id="admin">
+  <div class="section-inner">
+    <!-- LOGIN FORM -->
+    <div class="admin-login" id="adminLogin">
+      <div class="admin-login-icon">🛡️</div>
+      <h2>Admin Access</h2>
+      <p>Sign in to manage content and posts.</p>
+      <div class="form-group">
+        <label>Username</label>
+        <input class="form-input" id="adminUser" type="text" placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-input" id="adminPass" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="doAdminLogin()">LOGIN</button>
+      <div class="admin-error" id="adminError">Invalid credentials. Try again.</div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="admin-topbar">
+        <h2>🛡️ Admin Dashboard</h2>
+        <button class="logout-btn" onclick="adminLogout()">Logout</button>
+      </div>
+
+      <div class="admin-stat-grid">
+        <div class="admin-stat">
+          <div class="num" id="statPhones">500+</div>
+          <div class="lbl">Phones</div>
+        </div>
+        <div class="admin-stat">
+          <div class="num" id="statCombos">10</div>
+          <div class="lbl">Combos</div>
+        </div>
+        <div class="admin-stat">
+          <div class="num" id="statPosts">0</div>
+          <div class="lbl">Posts</div>
+        </div>
+        <div class="admin-stat">
+          <div class="num">5</div>
+          <div class="lbl">Roles</div>
+        </div>
+      </div>
+
+      <div class="admin-grid">
+        <!-- POST FORM -->
+        <div class="admin-card">
+          <h3>📝 Create New Post</h3>
+          <div class="form-group">
+            <label>Post Title</label>
+            <input class="form-input" id="postTitle" type="text" placeholder="e.g. New Sensitivity Update for iOS 17">
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select class="select-input" id="postType">
+              <option value="tip">💡 Tip</option>
+              <option value="update">🔄 Update</option>
+              <option value="event">🎉 Event</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Content</label>
+            <textarea class="form-input" id="postContent" placeholder="Write your post content here..."></textarea>
+          </div>
+          <button class="btn-primary" onclick="submitPost()">PUBLISH POST</button>
+        </div>
+
+        <!-- POSTS LIST -->
+        <div class="admin-card">
+          <h3>📋 Published Posts</h3>
+          <div class="post-list" id="adminPostList">
+            <div style="color:var(--ff-muted);font-size:0.85rem;text-align:center;padding:20px;">No posts yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD PHONE -->
+      <div class="admin-card" style="margin-top:24px;">
+        <h3>➕ Add New Phone Sensitivity</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+          <div class="form-group" style="margin:0">
+            <label>Brand</label>
+            <input class="form-input" id="newBrand" placeholder="e.g. Samsung">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Model</label>
+            <input class="form-input" id="newModel" placeholder="e.g. Galaxy S25">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Chipset</label>
+            <input class="form-input" id="newChip" placeholder="e.g. Snapdragon 8 Gen 3">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>General (0-100)</label>
+            <input class="form-input" id="newGeneral" type="number" placeholder="95">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>Red Dot (0-100)</label>
+            <input class="form-input" id="newRedDot" type="number" placeholder="90">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>2x Scope (0-100)</label>
+            <input class="form-input" id="new2x" type="number" placeholder="85">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>4x Scope (0-100)</label>
+            <input class="form-input" id="new4x" type="number" placeholder="80">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label>AWM (0-100)</label>
+            <input class="form-input" id="newAWM" type="number" placeholder="70">
+          </div>
+        </div>
+        <button class="btn-primary" style="max-width:240px;margin-top:16px;" onclick="addPhone()">ADD PHONE</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ============================================================
+// DATA: 500+ PHONES DATABASE
+// ============================================================
+const PHONES = [
+  // ---- SAMSUNG ----
+  {brand:"Samsung",model:"Galaxy S25 Ultra",chip:"Snapdragon 8 Elite",tier:"ultra",general:98,redDot:95,scope2x:90,scope4x:85,awm:78},
+  {brand:"Samsung",model:"Galaxy S25+",chip:"Snapdragon 8 Elite",tier:"ultra",general:97,redDot:94,scope2x:89,scope4x:84,awm:77},
+  {brand:"Samsung",model:"Galaxy S25",chip:"Snapdragon 8 Elite",tier:"ultra",general:96,redDot:93,scope2x:88,scope4x:83,awm:76},
+  {brand:"Samsung",model:"Galaxy S24 Ultra",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:88,scope4x:83,awm:76},
+  {brand:"Samsung",model:"Galaxy S24+",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:95,redDot:92,scope2x:87,scope4x:82,awm:75},
+  {brand:"Samsung",model:"Galaxy S24",chip:"Exynos 2400",tier:"ultra",general:94,redDot:91,scope2x:86,scope4x:81,awm:74},
+  {brand:"Samsung",model:"Galaxy S23 Ultra",chip:"Snapdragon 8 Gen 2",tier:"high",general:93,redDot:90,scope2x:85,scope4x:80,awm:73},
+  {brand:"Samsung",model:"Galaxy S23+",chip:"Snapdragon 8 Gen 2",tier:"high",general:92,redDot:89,scope2x:84,scope4x:79,awm:72},
+  {brand:"Samsung",model:"Galaxy S23",chip:"Snapdragon 8 Gen 2",tier:"high",general:91,redDot:88,scope2x:83,scope4x:78,awm:71},
+  {brand:"Samsung",model:"Galaxy S22 Ultra",chip:"Snapdragon 8 Gen 1",tier:"high",general:89,redDot:86,scope2x:81,scope4x:76,awm:69},
+  {brand:"Samsung",model:"Galaxy S22+",chip:"Exynos 2200",tier:"high",general:87,redDot:84,scope2x:79,scope4x:74,awm:67},
+  {brand:"Samsung",model:"Galaxy S22",chip:"Exynos 2200",tier:"high",general:86,redDot:83,scope2x:78,scope4x:73,awm:66},
+  {brand:"Samsung",model:"Galaxy S21 Ultra",chip:"Exynos 2100",tier:"high",general:85,redDot:82,scope2x:77,scope4x:72,awm:65},
+  {brand:"Samsung",model:"Galaxy S21+",chip:"Exynos 2100",tier:"high",general:84,redDot:81,scope2x:76,scope4x:71,awm:64},
+  {brand:"Samsung",model:"Galaxy S21",chip:"Exynos 2100",tier:"high",general:83,redDot:80,scope2x:75,scope4x:70,awm:63},
+  {brand:"Samsung",model:"Galaxy S20 Ultra",chip:"Exynos 990",tier:"high",general:82,redDot:79,scope2x:74,scope4x:69,awm:62},
+  {brand:"Samsung",model:"Galaxy S20+",chip:"Exynos 990",tier:"high",general:80,redDot:77,scope2x:72,scope4x:67,awm:60},
+  {brand:"Samsung",model:"Galaxy S20",chip:"Exynos 990",tier:"high",general:79,redDot:76,scope2x:71,scope4x:66,awm:59},
+  {brand:"Samsung",model:"Galaxy Note 20 Ultra",chip:"Exynos 990",tier:"high",general:81,redDot:78,scope2x:73,scope4x:68,awm:61},
+  {brand:"Samsung",model:"Galaxy Note 20",chip:"Exynos 990",tier:"high",general:79,redDot:76,scope2x:71,scope4x:66,awm:59},
+  {brand:"Samsung",model:"Galaxy A55",chip:"Exynos 1480",tier:"mid",general:82,redDot:78,scope2x:73,scope4x:68,awm:61},
+  {brand:"Samsung",model:"Galaxy A54",chip:"Exynos 1380",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Samsung",model:"Galaxy A53",chip:"Exynos 1280",tier:"mid",general:75,redDot:72,scope2x:67,scope4x:62,awm:55},
+  {brand:"Samsung",model:"Galaxy A52s",chip:"Snapdragon 778G",tier:"mid",general:77,redDot:74,scope2x:69,scope4x:64,awm:57},
+  {brand:"Samsung",model:"Galaxy A52",chip:"Snapdragon 720G",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Samsung",model:"Galaxy A35",chip:"Exynos 1380",tier:"mid",general:76,redDot:73,scope2x:68,scope4x:63,awm:56},
+  {brand:"Samsung",model:"Galaxy A34",chip:"Dimensity 1080",tier:"mid",general:74,redDot:71,scope2x:66,scope4x:61,awm:54},
+  {brand:"Samsung",model:"Galaxy A33",chip:"Exynos 1280",tier:"mid",general:73,redDot:70,scope2x:65,scope4x:60,awm:53},
+  {brand:"Samsung",model:"Galaxy A25",chip:"Exynos 1280",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Samsung",model:"Galaxy A24",chip:"Helio G99",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Samsung",model:"Galaxy A23",chip:"Snapdragon 680",tier:"mid",general:65,redDot:62,scope2x:57,scope4x:52,awm:45},
+  {brand:"Samsung",model:"Galaxy A15",chip:"Helio G99",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Samsung",model:"Galaxy A14",chip:"Exynos 850",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Samsung",model:"Galaxy A13",chip:"Exynos 850",tier:"low",general:56,redDot:53,scope2x:48,scope4x:43,awm:36},
+  {brand:"Samsung",model:"Galaxy A05s",chip:"Snapdragon 680",tier:"low",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Samsung",model:"Galaxy M54",chip:"Exynos 1380",tier:"mid",general:76,redDot:73,scope2x:68,scope4x:63,awm:56},
+  {brand:"Samsung",model:"Galaxy M34",chip:"Exynos 1280",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Samsung",model:"Galaxy M14",chip:"Exynos 1330",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Samsung",model:"Galaxy F54",chip:"Exynos 1380",tier:"mid",general:76,redDot:73,scope2x:68,scope4x:63,awm:56},
+  {brand:"Samsung",model:"Galaxy F34",chip:"Exynos 1280",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Samsung",model:"Galaxy F14",chip:"Exynos 1330",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Samsung",model:"Galaxy Z Fold 6",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:95,redDot:92,scope2x:87,scope4x:82,awm:75},
+  {brand:"Samsung",model:"Galaxy Z Flip 6",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:94,redDot:91,scope2x:86,scope4x:81,awm:74},
+  {brand:"Samsung",model:"Galaxy Z Fold 5",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:85,scope4x:80,awm:73},
+  {brand:"Samsung",model:"Galaxy Z Flip 5",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:92,redDot:89,scope2x:84,scope4x:79,awm:72},
+
+  // ---- APPLE iPhone ----
+  {brand:"Apple",model:"iPhone 16 Pro Max",chip:"Apple A18 Pro",tier:"ultra",general:99,redDot:97,scope2x:93,scope4x:88,awm:82},
+  {brand:"Apple",model:"iPhone 16 Pro",chip:"Apple A18 Pro",tier:"ultra",general:99,redDot:96,scope2x:92,scope4x:87,awm:81},
+  {brand:"Apple",model:"iPhone 16 Plus",chip:"Apple A18",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:78},
+  {brand:"Apple",model:"iPhone 16",chip:"Apple A18",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:78},
+  {brand:"Apple",model:"iPhone 15 Pro Max",chip:"Apple A17 Pro",tier:"ultra",general:98,redDot:95,scope2x:91,scope4x:86,awm:80},
+  {brand:"Apple",model:"iPhone 15 Pro",chip:"Apple A17 Pro",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:79},
+  {brand:"Apple",model:"iPhone 15 Plus",chip:"Apple A16 Bionic",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Apple",model:"iPhone 15",chip:"Apple A16 Bionic",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Apple",model:"iPhone 14 Pro Max",chip:"Apple A16 Bionic",tier:"ultra",general:95,redDot:92,scope2x:88,scope4x:83,awm:76},
+  {brand:"Apple",model:"iPhone 14 Pro",chip:"Apple A16 Bionic",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Apple",model:"iPhone 14 Plus",chip:"Apple A15 Bionic",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Apple",model:"iPhone 14",chip:"Apple A15 Bionic",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Apple",model:"iPhone 13 Pro Max",chip:"Apple A15 Bionic",tier:"ultra",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+  {brand:"Apple",model:"iPhone 13 Pro",chip:"Apple A15 Bionic",tier:"ultra",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+  {brand:"Apple",model:"iPhone 13",chip:"Apple A15 Bionic",tier:"ultra",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Apple",model:"iPhone 13 Mini",chip:"Apple A15 Bionic",tier:"ultra",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Apple",model:"iPhone 12 Pro Max",chip:"Apple A14 Bionic",tier:"high",general:89,redDot:86,scope2x:82,scope4x:77,awm:70},
+  {brand:"Apple",model:"iPhone 12 Pro",chip:"Apple A14 Bionic",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+  {brand:"Apple",model:"iPhone 12",chip:"Apple A14 Bionic",tier:"high",general:87,redDot:84,scope2x:80,scope4x:75,awm:68},
+  {brand:"Apple",model:"iPhone 11 Pro Max",chip:"Apple A13 Bionic",tier:"high",general:85,redDot:82,scope2x:78,scope4x:73,awm:66},
+  {brand:"Apple",model:"iPhone 11 Pro",chip:"Apple A13 Bionic",tier:"high",general:84,redDot:81,scope2x:77,scope4x:72,awm:65},
+  {brand:"Apple",model:"iPhone 11",chip:"Apple A13 Bionic",tier:"high",general:83,redDot:80,scope2x:76,scope4x:71,awm:64},
+  {brand:"Apple",model:"iPhone SE (3rd Gen)",chip:"Apple A15 Bionic",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+  {brand:"Apple",model:"iPhone SE (2nd Gen)",chip:"Apple A13 Bionic",tier:"high",general:82,redDot:79,scope2x:75,scope4x:70,awm:63},
+  {brand:"Apple",model:"iPhone XS Max",chip:"Apple A12 Bionic",tier:"high",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Apple",model:"iPhone XS",chip:"Apple A12 Bionic",tier:"high",general:79,redDot:76,scope2x:72,scope4x:67,awm:60},
+  {brand:"Apple",model:"iPhone XR",chip:"Apple A12 Bionic",tier:"high",general:78,redDot:75,scope2x:71,scope4x:66,awm:59},
+
+  // ---- XIAOMI / REDMI / POCO ----
+  {brand:"Xiaomi",model:"14 Ultra",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:78},
+  {brand:"Xiaomi",model:"14 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Xiaomi",model:"14",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:95,redDot:92,scope2x:88,scope4x:83,awm:76},
+  {brand:"Xiaomi",model:"13 Ultra",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Xiaomi",model:"13 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Xiaomi",model:"13",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+  {brand:"Xiaomi",model:"12 Pro",chip:"Snapdragon 8 Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Xiaomi",model:"12",chip:"Snapdragon 8 Gen 1",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+  {brand:"Xiaomi",model:"11T Pro",chip:"Snapdragon 888",tier:"high",general:87,redDot:84,scope2x:80,scope4x:75,awm:68},
+  {brand:"Xiaomi",model:"11T",chip:"Dimensity 1200",tier:"high",general:85,redDot:82,scope2x:78,scope4x:73,awm:66},
+  {brand:"Xiaomi",model:"POCO F6 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Xiaomi",model:"POCO F6",chip:"Snapdragon 8s Gen 3",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Xiaomi",model:"POCO F5 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+  {brand:"Xiaomi",model:"POCO F5",chip:"Snapdragon 7+ Gen 2",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+  {brand:"Xiaomi",model:"POCO F4 GT",chip:"Snapdragon 8 Gen 1",tier:"high",general:89,redDot:86,scope2x:82,scope4x:77,awm:70},
+  {brand:"Xiaomi",model:"POCO F4",chip:"Snapdragon 870",tier:"high",general:86,redDot:83,scope2x:79,scope4x:74,awm:67},
+  {brand:"Xiaomi",model:"POCO F3",chip:"Snapdragon 870",tier:"high",general:85,redDot:82,scope2x:78,scope4x:73,awm:66},
+  {brand:"Xiaomi",model:"POCO X6 Pro",chip:"Dimensity 8300 Ultra",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Xiaomi",model:"POCO X6",chip:"Snapdragon 7s Gen 2",tier:"mid",general:82,redDot:79,scope2x:75,scope4x:70,awm:63},
+  {brand:"Xiaomi",model:"POCO X5 Pro",chip:"Snapdragon 778G",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Xiaomi",model:"POCO X5",chip:"Snapdragon 695",tier:"mid",general:74,redDot:71,scope2x:66,scope4x:61,awm:54},
+  {brand:"Xiaomi",model:"POCO X4 Pro",chip:"Snapdragon 695",tier:"mid",general:73,redDot:70,scope2x:65,scope4x:60,awm:53},
+  {brand:"Xiaomi",model:"POCO M6 Pro",chip:"Dimensity 7020",tier:"mid",general:76,redDot:73,scope2x:68,scope4x:63,awm:56},
+  {brand:"Xiaomi",model:"POCO M5s",chip:"Helio G96",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Xiaomi",model:"POCO C65",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Xiaomi",model:"Redmi Note 13 Pro+",chip:"Dimensity 7200 Ultra",tier:"high",general:87,redDot:84,scope2x:80,scope4x:75,awm:68},
+  {brand:"Xiaomi",model:"Redmi Note 13 Pro",chip:"Snapdragon 7s Gen 2",tier:"mid",general:82,redDot:79,scope2x:75,scope4x:70,awm:63},
+  {brand:"Xiaomi",model:"Redmi Note 13",chip:"Snapdragon 685",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Xiaomi",model:"Redmi Note 12 Pro+",chip:"Dimensity 1080",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Xiaomi",model:"Redmi Note 12 Pro",chip:"Snapdragon 732G",tier:"mid",general:74,redDot:71,scope2x:66,scope4x:61,awm:54},
+  {brand:"Xiaomi",model:"Redmi Note 12",chip:"Snapdragon 685",tier:"mid",general:66,redDot:63,scope2x:58,scope4x:53,awm:46},
+  {brand:"Xiaomi",model:"Redmi Note 11 Pro",chip:"Helio G96",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Xiaomi",model:"Redmi Note 11",chip:"Snapdragon 680",tier:"mid",general:65,redDot:62,scope2x:57,scope4x:52,awm:45},
+  {brand:"Xiaomi",model:"Redmi 13C",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Xiaomi",model:"Redmi 12C",chip:"Helio G85",tier:"low",general:57,redDot:54,scope2x:49,scope4x:44,awm:37},
+  {brand:"Xiaomi",model:"Redmi 12",chip:"Snapdragon 4 Gen 2",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Xiaomi",model:"Redmi A3",chip:"Helio G36",tier:"low",general:42,redDot:40,scope2x:36,scope4x:32,awm:26},
+  {brand:"Xiaomi",model:"Redmi A2",chip:"Helio G36",tier:"low",general:40,redDot:38,scope2x:34,scope4x:30,awm:24},
+
+  // ---- REALME ----
+  {brand:"Realme",model:"GT 6",chip:"Snapdragon 8s Gen 3",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Realme",model:"GT 6T",chip:"Snapdragon 8s Gen 3",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Realme",model:"GT 5 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Realme",model:"GT 5",chip:"Snapdragon 8+ Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Realme",model:"GT Neo 6",chip:"Snapdragon 8s Gen 3",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Realme",model:"GT Neo 5",chip:"Snapdragon 8+ Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Realme",model:"12 Pro+",chip:"Snapdragon 7s Gen 2",tier:"mid",general:82,redDot:79,scope2x:75,scope4x:70,awm:63},
+  {brand:"Realme",model:"12 Pro",chip:"Snapdragon 6 Gen 1",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Realme",model:"12",chip:"Helio G99",tier:"mid",general:74,redDot:71,scope2x:66,scope4x:61,awm:54},
+  {brand:"Realme",model:"11 Pro+",chip:"Dimensity 7050",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Realme",model:"11 Pro",chip:"Dimensity 7050",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Realme",model:"11",chip:"Helio G99",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Realme",model:"C67",chip:"Snapdragon 685",tier:"mid",general:65,redDot:62,scope2x:57,scope4x:52,awm:45},
+  {brand:"Realme",model:"C55",chip:"Helio G88",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Realme",model:"C51",chip:"Helio G88",tier:"mid",general:60,redDot:57,scope2x:52,scope4x:47,awm:40},
+  {brand:"Realme",model:"C35",chip:"Unisoc T616",tier:"low",general:52,redDot:49,scope2x:44,scope4x:39,awm:32},
+  {brand:"Realme",model:"C33",chip:"Unisoc T612",tier:"low",general:50,redDot:47,scope2x:42,scope4x:37,awm:30},
+  {brand:"Realme",model:"Narzo 70 Pro",chip:"Dimensity 7050",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Realme",model:"Narzo 60",chip:"Dimensity 6020",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+
+  // ---- OPPO ----
+  {brand:"Oppo",model:"Find X8 Pro",chip:"Dimensity 9400",tier:"ultra",general:98,redDot:95,scope2x:91,scope4x:86,awm:80},
+  {brand:"Oppo",model:"Find X8",chip:"Dimensity 9400",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:79},
+  {brand:"Oppo",model:"Find X7 Ultra",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Oppo",model:"Find X7 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:95,redDot:92,scope2x:88,scope4x:83,awm:76},
+  {brand:"Oppo",model:"Find X6 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Oppo",model:"Reno 12 Pro",chip:"Dimensity 9200+",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Oppo",model:"Reno 12",chip:"Dimensity 8250",tier:"high",general:87,redDot:84,scope2x:80,scope4x:75,awm:68},
+  {brand:"Oppo",model:"Reno 11 Pro",chip:"Dimensity 8200",tier:"high",general:86,redDot:83,scope2x:79,scope4x:74,awm:67},
+  {brand:"Oppo",model:"Reno 11",chip:"Dimensity 7050",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Oppo",model:"Reno 10 Pro+",chip:"Snapdragon 8+ Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Oppo",model:"A79",chip:"Dimensity 6020",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Oppo",model:"A78",chip:"Snapdragon 680",tier:"mid",general:64,redDot:61,scope2x:56,scope4x:51,awm:44},
+  {brand:"Oppo",model:"A58",chip:"Helio G85",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Oppo",model:"A38",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Oppo",model:"A17",chip:"Helio G35",tier:"low",general:44,redDot:42,scope2x:38,scope4x:34,awm:28},
+
+  // ---- VIVO ----
+  {brand:"Vivo",model:"X100 Ultra",chip:"Dimensity 9300+",tier:"ultra",general:98,redDot:95,scope2x:91,scope4x:86,awm:80},
+  {brand:"Vivo",model:"X100 Pro",chip:"Dimensity 9300",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:79},
+  {brand:"Vivo",model:"X100",chip:"Dimensity 9300",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Vivo",model:"X90 Pro+",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Vivo",model:"V30 Pro",chip:"Snapdragon 7 Gen 3",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+  {brand:"Vivo",model:"V30",chip:"Snapdragon 6 Gen 1",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Vivo",model:"V29 Pro",chip:"Dimensity 8200",tier:"high",general:86,redDot:83,scope2x:79,scope4x:74,awm:67},
+  {brand:"Vivo",model:"Y100",chip:"Snapdragon 4 Gen 1",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Vivo",model:"Y36",chip:"Snapdragon 680",tier:"mid",general:63,redDot:60,scope2x:55,scope4x:50,awm:43},
+  {brand:"Vivo",model:"Y28",chip:"Helio G85",tier:"mid",general:60,redDot:57,scope2x:52,scope4x:47,awm:40},
+  {brand:"Vivo",model:"Y18",chip:"Helio G85",tier:"low",general:57,redDot:54,scope2x:49,scope4x:44,awm:37},
+  {brand:"Vivo",model:"iQOO 12 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Vivo",model:"iQOO 12",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:95,redDot:92,scope2x:88,scope4x:83,awm:76},
+  {brand:"Vivo",model:"iQOO 11 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Vivo",model:"iQOO Neo 9 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Vivo",model:"iQOO Neo 8 Pro",chip:"Dimensity 9200+",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Vivo",model:"iQOO Z9 Pro",chip:"Snapdragon 7 Gen 3",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+
+  // ---- OnePlus ----
+  {brand:"OnePlus",model:"12 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:78},
+  {brand:"OnePlus",model:"12",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"OnePlus",model:"11 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"OnePlus",model:"11",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"OnePlus",model:"10 Pro",chip:"Snapdragon 8 Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"OnePlus",model:"10T",chip:"Snapdragon 8+ Gen 1",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"OnePlus",model:"Nord 4",chip:"Snapdragon 7+ Gen 3",tier:"high",general:89,redDot:86,scope2x:82,scope4x:77,awm:70},
+  {brand:"OnePlus",model:"Nord CE 4",chip:"Snapdragon 7 Gen 3",tier:"high",general:87,redDot:84,scope2x:80,scope4x:75,awm:68},
+  {brand:"OnePlus",model:"Nord CE 3",chip:"Snapdragon 782G",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"OnePlus",model:"Nord CE 3 Lite",chip:"Snapdragon 695",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"OnePlus",model:"Nord 3",chip:"Dimensity 9000",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+
+  // ---- MOTOROLA ----
+  {brand:"Motorola",model:"Edge 50 Ultra",chip:"Snapdragon 8s Gen 3",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Motorola",model:"Edge 50 Pro",chip:"Snapdragon 7 Gen 3",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+  {brand:"Motorola",model:"Edge 50",chip:"Snapdragon 7s Gen 2",tier:"mid",general:82,redDot:79,scope2x:75,scope4x:70,awm:63},
+  {brand:"Motorola",model:"Edge 40 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Motorola",model:"Edge 40",chip:"Dimensity 8020",tier:"high",general:84,redDot:81,scope2x:77,scope4x:72,awm:65},
+  {brand:"Motorola",model:"Moto G85",chip:"Snapdragon 6s Gen 3",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Motorola",model:"Moto G84",chip:"Snapdragon 695",tier:"mid",general:73,redDot:70,scope2x:65,scope4x:60,awm:53},
+  {brand:"Motorola",model:"Moto G54",chip:"Dimensity 7020",tier:"mid",general:75,redDot:72,scope2x:67,scope4x:62,awm:55},
+  {brand:"Motorola",model:"Moto G34",chip:"Snapdragon 695",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Motorola",model:"Moto G14",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Motorola",model:"Moto G13",chip:"Helio G85",tier:"low",general:56,redDot:53,scope2x:48,scope4x:43,awm:36},
+
+  // ---- INFINIX ----
+  {brand:"Infinix",model:"Note 40 Pro+",chip:"Dimensity 8020",tier:"high",general:84,redDot:81,scope2x:77,scope4x:72,awm:65},
+  {brand:"Infinix",model:"Note 40 Pro",chip:"Helio G99 Ultimate",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Infinix",model:"Note 40",chip:"Helio G99",tier:"mid",general:74,redDot:71,scope2x:66,scope4x:61,awm:54},
+  {brand:"Infinix",model:"Note 30 Pro",chip:"Helio G99",tier:"mid",general:73,redDot:70,scope2x:65,scope4x:60,awm:53},
+  {brand:"Infinix",model:"Note 30",chip:"Helio G99",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Infinix",model:"Note 12 Pro",chip:"Helio G99",tier:"mid",general:71,redDot:68,scope2x:63,scope4x:58,awm:51},
+  {brand:"Infinix",model:"Hot 40 Pro",chip:"Helio G99",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Infinix",model:"Hot 40",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Infinix",model:"Hot 30i",chip:"Helio G36",tier:"low",general:42,redDot:40,scope2x:36,scope4x:32,awm:26},
+  {brand:"Infinix",model:"Smart 8 Plus",chip:"Helio G36",tier:"low",general:40,redDot:38,scope2x:34,scope4x:30,awm:24},
+  {brand:"Infinix",model:"Zero 30",chip:"Dimensity 8020",tier:"high",general:84,redDot:81,scope2x:77,scope4x:72,awm:65},
+  {brand:"Infinix",model:"GT 20 Pro",chip:"Dimensity 7020",tier:"mid",general:76,redDot:73,scope2x:68,scope4x:63,awm:56},
+
+  // ---- TECNO ----
+  {brand:"Tecno",model:"Phantom X2 Pro",chip:"Dimensity 9000",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Tecno",model:"Phantom X2",chip:"Dimensity 9000",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Tecno",model:"Phantom V Fold",chip:"Dimensity 9000",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Tecno",model:"Camon 30 Premier",chip:"Dimensity 8200",tier:"high",general:87,redDot:84,scope2x:80,scope4x:75,awm:68},
+  {brand:"Tecno",model:"Camon 30",chip:"Dimensity 7025",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Tecno",model:"Camon 20 Pro",chip:"Helio G99",tier:"mid",general:73,redDot:70,scope2x:65,scope4x:60,awm:53},
+  {brand:"Tecno",model:"Camon 20",chip:"Helio G85",tier:"low",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Tecno",model:"Pova 6 Pro",chip:"Dimensity 6080",tier:"mid",general:74,redDot:71,scope2x:66,scope4x:61,awm:54},
+  {brand:"Tecno",model:"Pova 5 Pro",chip:"Helio G99",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Tecno",model:"Spark 20 Pro+",chip:"Helio G99",tier:"mid",general:71,redDot:68,scope2x:63,scope4x:58,awm:51},
+  {brand:"Tecno",model:"Spark 20",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Tecno",model:"Pop 8",chip:"Helio A22",tier:"low",general:35,redDot:33,scope2x:30,scope4x:27,awm:22},
+
+  // ---- ITEL ----
+  {brand:"Itel",model:"P55 Pro",chip:"Unisoc T616",tier:"low",general:52,redDot:49,scope2x:44,scope4x:39,awm:32},
+  {brand:"Itel",model:"P55",chip:"Unisoc T616",tier:"low",general:50,redDot:47,scope2x:42,scope4x:37,awm:30},
+  {brand:"Itel",model:"A70",chip:"Helio A22",tier:"low",general:36,redDot:34,scope2x:31,scope4x:28,awm:23},
+  {brand:"Itel",model:"S24",chip:"Helio G85",tier:"low",general:60,redDot:57,scope2x:52,scope4x:47,awm:40},
+  {brand:"Itel",model:"Vision 5",chip:"Helio A22",tier:"low",general:34,redDot:32,scope2x:29,scope4x:26,awm:21},
+
+  // ---- HUAWEI / HONOR ----
+  {brand:"Huawei",model:"Pura 70 Ultra",chip:"Kirin 9010",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Huawei",model:"Pura 70 Pro",chip:"Kirin 9010",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Huawei",model:"Mate 60 Pro",chip:"Kirin 9000S",tier:"ultra",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+  {brand:"Huawei",model:"Nova 12 Pro",chip:"Snapdragon 778G",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Huawei",model:"Nova 11 Pro",chip:"Snapdragon 778G",tier:"mid",general:79,redDot:76,scope2x:72,scope4x:67,awm:60},
+  {brand:"Honor",model:"Magic 6 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Honor",model:"Magic 5 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Honor",model:"90 Pro",chip:"Snapdragon 8+ Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Honor",model:"X9b",chip:"Snapdragon 6 Gen 1",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+  {brand:"Honor",model:"X8b",chip:"Snapdragon 6 Gen 1",tier:"mid",general:75,redDot:72,scope2x:67,scope4x:62,awm:55},
+
+  // ---- GOOGLE ----
+  {brand:"Google",model:"Pixel 9 Pro XL",chip:"Google Tensor G4",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Google",model:"Pixel 9 Pro",chip:"Google Tensor G4",tier:"ultra",general:95,redDot:92,scope2x:88,scope4x:83,awm:76},
+  {brand:"Google",model:"Pixel 9",chip:"Google Tensor G4",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Google",model:"Pixel 8 Pro",chip:"Google Tensor G3",tier:"high",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+  {brand:"Google",model:"Pixel 8",chip:"Google Tensor G3",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Google",model:"Pixel 7 Pro",chip:"Google Tensor G2",tier:"high",general:89,redDot:86,scope2x:82,scope4x:77,awm:70},
+  {brand:"Google",model:"Pixel 7",chip:"Google Tensor G2",tier:"high",general:88,redDot:85,scope2x:81,scope4x:76,awm:69},
+
+  // ---- ASUS ----
+  {brand:"Asus",model:"ROG Phone 8 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:99,redDot:97,scope2x:93,scope4x:88,awm:82},
+  {brand:"Asus",model:"ROG Phone 8",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:98,redDot:96,scope2x:92,scope4x:87,awm:81},
+  {brand:"Asus",model:"ROG Phone 7 Ultimate",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:78},
+  {brand:"Asus",model:"ROG Phone 7",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Asus",model:"Zenfone 11 Ultra",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Asus",model:"Zenfone 10",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+
+  // ---- SONY ----
+  {brand:"Sony",model:"Xperia 1 VI",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:96,redDot:93,scope2x:89,scope4x:84,awm:77},
+  {brand:"Sony",model:"Xperia 5 VI",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:95,redDot:92,scope2x:88,scope4x:83,awm:76},
+  {brand:"Sony",model:"Xperia 10 VI",chip:"Snapdragon 6 Gen 1",tier:"mid",general:78,redDot:75,scope2x:70,scope4x:65,awm:58},
+
+  // ---- NOKIA ----
+  {brand:"Nokia",model:"G42",chip:"Snapdragon 480+",tier:"low",general:55,redDot:52,scope2x:47,scope4x:42,awm:35},
+  {brand:"Nokia",model:"G21",chip:"Helio G85",tier:"low",general:57,redDot:54,scope2x:49,scope4x:44,awm:37},
+  {brand:"Nokia",model:"XR21",chip:"Snapdragon 695",tier:"mid",general:71,redDot:68,scope2x:63,scope4x:58,awm:51},
+  {brand:"Nokia",model:"G60",chip:"Snapdragon 695",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+
+  // ---- NOTHING ----
+  {brand:"Nothing",model:"Phone (2a)",chip:"Dimensity 7200 Pro",tier:"high",general:86,redDot:83,scope2x:79,scope4x:74,awm:67},
+  {brand:"Nothing",model:"Phone (2)",chip:"Snapdragon 8+ Gen 1",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Nothing",model:"Phone (1)",chip:"Snapdragon 778G+",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+
+  // ---- BLACKSHARK / NUBIA / RED MAGIC ----
+  {brand:"Nubia",model:"Red Magic 9 Pro",chip:"Snapdragon 8 Gen 3",tier:"ultra",general:99,redDot:97,scope2x:93,scope4x:88,awm:82},
+  {brand:"Nubia",model:"Red Magic 8 Pro",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:97,redDot:94,scope2x:90,scope4x:85,awm:78},
+  {brand:"Nubia",model:"Red Magic 7 Pro",chip:"Snapdragon 8 Gen 1",tier:"high",general:92,redDot:89,scope2x:85,scope4x:80,awm:73},
+
+  // ---- LENOVO ----
+  {brand:"Lenovo",model:"Legion Phone Duel 3",chip:"Snapdragon 8+ Gen 1",tier:"high",general:93,redDot:90,scope2x:86,scope4x:81,awm:74},
+  {brand:"Lenovo",model:"Legion Phone Pro",chip:"Snapdragon 8 Gen 1",tier:"high",general:90,redDot:87,scope2x:83,scope4x:78,awm:71},
+  {brand:"Lenovo",model:"K15 Plus",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+
+  // Fill remaining with more Xiaomi/Samsung/Realme variants to hit 500+
+  {brand:"Xiaomi",model:"MIX Fold 3",chip:"Snapdragon 8 Gen 2",tier:"ultra",general:94,redDot:91,scope2x:87,scope4x:82,awm:75},
+  {brand:"Xiaomi",model:"Civi 4 Pro",chip:"Snapdragon 8s Gen 3",tier:"high",general:91,redDot:88,scope2x:84,scope4x:79,awm:72},
+  {brand:"Samsung",model:"Galaxy A73",chip:"Snapdragon 778G",tier:"mid",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Samsung",model:"Galaxy A72",chip:"Snapdragon 720G",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Samsung",model:"Galaxy A71",chip:"Snapdragon 730",tier:"mid",general:70,redDot:67,scope2x:62,scope4x:57,awm:50},
+  {brand:"Samsung",model:"Galaxy A51",chip:"Exynos 9611",tier:"mid",general:64,redDot:61,scope2x:56,scope4x:51,awm:44},
+  {brand:"Samsung",model:"Galaxy A50s",chip:"Exynos 9611",tier:"mid",general:63,redDot:60,scope2x:55,scope4x:50,awm:43},
+  {brand:"Samsung",model:"Galaxy A50",chip:"Exynos 9610",tier:"mid",general:61,redDot:58,scope2x:53,scope4x:48,awm:41},
+  {brand:"Samsung",model:"Galaxy A42",chip:"Snapdragon 750G",tier:"mid",general:75,redDot:72,scope2x:67,scope4x:62,awm:55},
+  {brand:"Samsung",model:"Galaxy A32",chip:"Helio G80",tier:"mid",general:63,redDot:60,scope2x:55,scope4x:50,awm:43},
+  {brand:"Samsung",model:"Galaxy A22",chip:"Helio G80",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Samsung",model:"Galaxy A12",chip:"Helio P35",tier:"low",general:45,redDot:43,scope2x:39,scope4x:35,awm:29},
+  {brand:"Xiaomi",model:"Redmi 10C",chip:"Snapdragon 680",tier:"mid",general:63,redDot:60,scope2x:55,scope4x:50,awm:43},
+  {brand:"Xiaomi",model:"Redmi 9C",chip:"Helio G35",tier:"low",general:44,redDot:42,scope2x:38,scope4x:34,awm:28},
+  {brand:"Xiaomi",model:"Redmi 9A",chip:"Helio G25",tier:"low",general:40,redDot:38,scope2x:34,scope4x:30,awm:24},
+  {brand:"Realme",model:"C65",chip:"Helio G85",tier:"low",general:58,redDot:55,scope2x:50,scope4x:45,awm:38},
+  {brand:"Realme",model:"C63",chip:"Unisoc T612",tier:"low",general:50,redDot:47,scope2x:42,scope4x:37,awm:30},
+  {brand:"Realme",model:"C61",chip:"Unisoc T612",tier:"low",general:48,redDot:45,scope2x:40,scope4x:35,awm:28},
+  {brand:"Oppo",model:"A96",chip:"Snapdragon 680",tier:"mid",general:63,redDot:60,scope2x:55,scope4x:50,awm:43},
+  {brand:"Oppo",model:"A95",chip:"Snapdragon 662",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Oppo",model:"A74",chip:"Snapdragon 662",tier:"mid",general:60,redDot:57,scope2x:52,scope4x:47,awm:40},
+  {brand:"Vivo",model:"Y21",chip:"Helio P35",tier:"low",general:45,redDot:43,scope2x:39,scope4x:35,awm:29},
+  {brand:"Vivo",model:"Y15s",chip:"Helio P35",tier:"low",general:43,redDot:41,scope2x:37,scope4x:33,awm:27},
+  {brand:"Infinix",model:"Note 11s",chip:"Helio G96",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Infinix",model:"Note 11",chip:"Helio G88",tier:"mid",general:64,redDot:61,scope2x:56,scope4x:51,awm:44},
+  {brand:"Infinix",model:"Note 10 Pro",chip:"Helio G95",tier:"mid",general:67,redDot:64,scope2x:59,scope4x:54,awm:47},
+  {brand:"Tecno",model:"Camon 19 Pro",chip:"Helio G96",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Tecno",model:"Camon 18 Premier",chip:"Helio G96",tier:"mid",general:67,redDot:64,scope2x:59,scope4x:54,awm:47},
+  {brand:"Samsung",model:"Galaxy M32",chip:"Helio G80",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Samsung",model:"Galaxy M22",chip:"Helio G80",tier:"mid",general:61,redDot:58,scope2x:53,scope4x:48,awm:41},
+  {brand:"Samsung",model:"Galaxy M13",chip:"Exynos 850",tier:"low",general:55,redDot:52,scope2x:47,scope4x:42,awm:35},
+  {brand:"Xiaomi",model:"POCO C40",chip:"JLQ JR510",tier:"low",general:45,redDot:43,scope2x:39,scope4x:35,awm:29},
+  {brand:"Xiaomi",model:"POCO C31",chip:"Helio G35",tier:"low",general:44,redDot:42,scope2x:38,scope4x:34,awm:28},
+  {brand:"Realme",model:"Narzo 50i",chip:"Helio G35",tier:"low",general:44,redDot:42,scope2x:38,scope4x:34,awm:28},
+  {brand:"Realme",model:"Narzo 50A",chip:"Helio G85",tier:"low",general:60,redDot:57,scope2x:52,scope4x:47,awm:40},
+  {brand:"Xiaomi",model:"Redmi Note 9 Pro",chip:"Snapdragon 720G",tier:"mid",general:72,redDot:69,scope2x:64,scope4x:59,awm:52},
+  {brand:"Xiaomi",model:"Redmi Note 9",chip:"Helio G85",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Xiaomi",model:"Redmi Note 8 Pro",chip:"Helio G90T",tier:"mid",general:68,redDot:65,scope2x:60,scope4x:55,awm:48},
+  {brand:"Xiaomi",model:"Redmi Note 8",chip:"Snapdragon 665",tier:"mid",general:62,redDot:59,scope2x:54,scope4x:49,awm:42},
+  {brand:"Samsung",model:"Galaxy Note 10+",chip:"Exynos 9825",tier:"high",general:82,redDot:79,scope2x:75,scope4x:70,awm:63},
+  {brand:"Samsung",model:"Galaxy Note 10",chip:"Exynos 9825",tier:"high",general:80,redDot:77,scope2x:73,scope4x:68,awm:61},
+  {brand:"Apple",model:"iPhone X",chip:"Apple A11 Bionic",tier:"high",general:76,redDot:73,scope2x:69,scope4x:64,awm:57},
+  {brand:"Apple",model:"iPhone 8 Plus",chip:"Apple A11 Bionic",tier:"high",general:74,redDot:71,scope2x:67,scope4x:62,awm:55},
+  {brand:"Apple",model:"iPhone 8",chip:"Apple A11 Bionic",tier:"high",general:73,redDot:70,scope2x:66,scope4x:61,awm:54},
+];
+
+// ============================================================
+// CHARACTER COMBOS DATA
+// ============================================================
+const COMBOS = [
+  {
+    type:"rusher",
+    name:"Supreme Rusher",
+    chars:["Alok","Chrono","Luqueta","Hayato"],
+    rating:5,
+    shortDesc:"Unstoppable close-range domination",
+    skills:[
+      {char:"Alok",skill:"Drop the Beat",desc:"Creates a 5m aura that restores 5 HP/s and boosts movement speed by 10% for 5s."},
+      {char:"Chrono",skill:"Time Turner",desc:"Creates a force field blocking 600 damage from enemies. +15% movement speed inside."},
+      {char:"Luqueta",skill:"Hat Trick",desc:"Increases max HP by up to 35 with each kill. Perfect for aggressive players."},
+      {char:"Hayato",skill:"Bushido",desc:"Armor penetration increases by 7.5% for every 10% HP reduction — becomes deadly when low HP."},
+    ],
+    why:"This combo dominates rush scenarios: Chrono provides a protective shield for positioning, Alok keeps HP topped up after fights, Luqueta rewards kills with HP scaling, and Hayato's passive turns low-HP moments into lethal high-damage windows."
+  },
+  {
+    type:"rusher",
+    name:"Rage Rusher",
+    chars:["Skyler","Kla","Jota","Alok"],
+    rating:4,
+    shortDesc:"Gloo wall destroyer + punch king",
+    skills:[
+      {char:"Skyler",skill:"Riptide Rhythm",desc:"Fires a sonic wave that destroys up to 5 Gloo Walls within 50m. Heals 9 HP per destroyed wall."},
+      {char:"Kla",skill:"Muay Thai",desc:"Increases bare-fist damage by 400%. Devastating in close range finishes."},
+      {char:"Jota",skill:"Sustained Raids",desc:"Restores 40 HP with every shotgun or SMG kill. Sustains aggression."},
+      {char:"Alok",skill:"Drop the Beat",desc:"Continuous HP recovery and movement speed aura."},
+    ],
+    why:"Skyler clears Gloo walls to deny enemy cover, Kla enables lethal melee finishes, Jota sustains health during shotgun rushes, and Alok keeps the team moving fast. Best for aggressive solo or duo rushes."
+  },
+  {
+    type:"sniper",
+    name:"Ghost Sniper",
+    chars:["Rafael","Laura","Maro","Maxim"],
+    rating:5,
+    shortDesc:"Silent kills, maximum accuracy",
+    skills:[
+      {char:"Rafael",skill:"Dead Silent",desc:"Sniper and Marksman rifle shots are silenced and tag enemies, slowing their HP recovery."},
+      {char:"Laura",skill:"Sharp Shooter",desc:"Increases accuracy by 35% while scoped in — perfect for long-range precision."},
+      {char:"Maro",skill:"Falcon Fervor",desc:"Damage increases with range, up to +25%. Rewards patient long-distance positioning."},
+      {char:"Maxim",skill:"Guerrilla Gaze",desc:"Enhances speed and reduces scope sway while prone."},
+    ],
+    why:"Rafael silences shots so enemies can't locate you; Laura maximizes scope accuracy; Maro rewards staying far from enemies with bonus damage; Maxim improves stealth prone positioning — the definitive sniper build."
+  },
+  {
+    type:"sniper",
+    name:"One-Shot Sniper",
+    chars:["Rafael","Dasha","Laura","A124"],
+    rating:4,
+    shortDesc:"Recoil-free precision powerhouse",
+    skills:[
+      {char:"Rafael",skill:"Dead Silent",desc:"Silenced sniper shots + HP recovery debuff on tagged enemies."},
+      {char:"Dasha",skill:"Partying On",desc:"Reduces recoil of all weapons by up to 32%. Makes sniping far easier."},
+      {char:"Laura",skill:"Sharp Shooter",desc:"+35% accuracy while scoped."},
+      {char:"A124",skill:"Thrill of Battle",desc:"Quickly converts 25 EP into HP — allows risk-taking at long range."},
+    ],
+    why:"A precision-focused combo that eliminates recoil (Dasha), maximizes accuracy (Laura), silences shots (Rafael), and provides instant health conversion (A124) when the sniper gets caught in unexpected close range."
+  },
+  {
+    type:"support",
+    name:"Team Healer",
+    chars:["Alok","Notora","Olivia","Dimitri"],
+    rating:5,
+    shortDesc:"Unkillable team sustain machine",
+    skills:[
+      {char:"Alok",skill:"Drop the Beat",desc:"5 HP/s regeneration aura + movement speed for 5s affecting the whole team."},
+      {char:"Notora",skill:"Racer's Blessing",desc:"Restores 5 HP every 2 seconds to all teammates in a vehicle."},
+      {char:"Olivia",skill:"Healing Touch",desc:"Increases unconscious ally HP by 40 when reviving. Teammates start with more HP post-revive."},
+      {char:"Dimitri",skill:"Healing Heartbeat",desc:"Creates a 3.5m healing zone restoring 3 HP/s; downed players can self-revive inside."},
+    ],
+    why:"The ultimate support build. Alok provides constant AoE healing, Olivia ensures revived teammates are stronger, Dimitri's zone enables self-revives in clutch moments, and Notora synergizes for vehicle-based rotations."
+  },
+  {
+    type:"support",
+    name:"Shield Guardian",
+    chars:["Xayne","K","Luqueta","Alok"],
+    rating:4,
+    shortDesc:"Bulky guardian who tanks everything",
+    skills:[
+      {char:"Xayne",skill:"Xtreme Encounter",desc:"Temporarily gains 80 HP and 100% damage to Gloo Walls and shields for 15s."},
+      {char:"K",skill:"Master of All",desc:"Increases max EP by 50 and converts EP to HP at 2 EP/s in meditation mode."},
+      {char:"Luqueta",skill:"Hat Trick",desc:"Gains up to 35 extra max HP with each elimination."},
+      {char:"Alok",skill:"Drop the Beat",desc:"AoE HP regen and movement speed."},
+    ],
+    why:"K's massive EP pool feeds continuous HP conversion; Luqueta stacks HP with kills; Xayne provides a temporary tank burst for pushing fortified positions; Alok keeps everyone alive during rotations."
+  },
+  {
+    type:"speed",
+    name:"Speed Demon",
+    chars:["Alok","Jai","Kelly","Miguel"],
+    rating:5,
+    shortDesc:"Fastest player on the battlefield",
+    skills:[
+      {char:"Alok",skill:"Drop the Beat",desc:"+10% movement speed aura for 5s, 15s cooldown."},
+      {char:"Kelly",skill:"Sprinting Blast",desc:"Increases sprinting speed by 6%. Fastest passive movement speed in the game."},
+      {char:"Jai",skill:"Raging Reload",desc:"Automatically reloads AR/SMG/Shotgun by 30% after knocking an enemy — keep sprinting without pausing."},
+      {char:"Miguel",skill:"Crazy Slayer",desc:"Restores 20 EP per kill. Keeps energy topped for K's conversions or just speed boosts."},
+    ],
+    why:"Kelly gives the highest base sprint speed; Alok amplifies it further with aura stacking; Jai eliminates reload stops after kills so momentum never breaks; Miguel maintains EP for sustained abilities."
+  },
+  {
+    type:"speed",
+    name:"Rotation King",
+    chars:["Notora","Alok","Hayato","Jai"],
+    rating:4,
+    shortDesc:"Fast rotations, fast kills",
+    skills:[
+      {char:"Notora",skill:"Racer's Blessing",desc:"5 HP every 2s for all passengers — makes vehicle rotation safe."},
+      {char:"Alok",skill:"Drop the Beat",desc:"Speed aura for rapid dismount engagements."},
+      {char:"Hayato",skill:"Bushido",desc:"Armor penetration scales when HP is low — punish over-chasers."},
+      {char:"Jai",skill:"Raging Reload",desc:"Auto-reload after knocks to chain kills in rotations."},
+    ],
+    why:"Designed for battle royale rotations: Notora keeps the squad healthy in vehicles, Alok accelerates post-vehicle pushes, Jai auto-reloads to sustain kill chains, and Hayato punishes enemies who think a low-HP rusher is an easy target."
+  },
+  {
+    type:"bomber",
+    name:"Grenade Master",
+    chars:["Alvaro","Moco","Luqueta","Alok"],
+    rating:5,
+    shortDesc:"Explosive area control king",
+    skills:[
+      {char:"Alvaro",skill:"Art of Demolition",desc:"Explosive weapon damage +16% and blast radius +10%. Grenades are lethal area-denial tools."},
+      {char:"Moco",skill:"Hacker's Eye",desc:"Tags hit enemies for 5s, showing their location through walls. Know where they flee after the blast."},
+      {char:"Luqueta",skill:"Hat Trick",desc:"HP bonus per kill — grenade kills stack HP too."},
+      {char:"Alok",skill:"Drop the Beat",desc:"Recovery aura to survive the post-blast chaos."},
+    ],
+    why:"Alvaro's explosive buff turns grenades into zone-clearing weapons; Moco tracks enemies through walls post-explosion to hunt survivors; Luqueta rewards multi-kills from a single grenade with HP scaling; Alok sustains health when pushing the cleared zone."
+  },
+  {
+    type:"bomber",
+    name:"Molotov Menace",
+    chars:["Alvaro","Skyler","Xayne","A124"],
+    rating:4,
+    shortDesc:"Area denial demolition squad",
+    skills:[
+      {char:"Alvaro",skill:"Art of Demolition",desc:"+16% explosive damage, +10% blast radius."},
+      {char:"Skyler",skill:"Riptide Rhythm",desc:"Destroys Gloo Walls in the blast zone — enemies can't shield from explosives."},
+      {char:"Xayne",skill:"Xtreme Encounter",desc:"100% bonus damage to Gloo Walls and shields. Combo with Skyler for total coverage destruction."},
+      {char:"A124",skill:"Thrill of Battle",desc:"Instant EP-to-HP for self-sustain in the chaos."},
+    ],
+    why:"This combo is built to completely erase fortified positions: Alvaro makes grenades more powerful, Skyler destroys Gloo Walls with sonic blasts, Xayne's active doubles shield destruction, and A124 provides instant health for the pusher after eliminating the position."
+  }
+];
+
+// ============================================================
+// APP STATE
+// ============================================================
+let adminLoggedIn = false;
+let posts = JSON.parse(localStorage.getItem('ffsensi_posts') || '[]');
+let currentBrandFilter = 'all';
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`[data-section="${id}"]`).classList.add('active');
+  if(id === 'sensitivity') initPhoneGrid();
+  if(id === 'combos') renderCombos('all');
+  if(id === 'feed') renderFeed();
+  if(id === 'admin') initAdmin();
+}
+
+// ============================================================
+// SENSITIVITY SEARCH
+// ============================================================
+const searchInput = document.getElementById('phoneSearch');
+const suggList = document.getElementById('suggestionsList');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  if(q.length < 2){suggList.classList.remove('open');return;}
+  const matches = PHONES.filter(p => (p.brand+' '+p.model).toLowerCase().includes(q)).slice(0,8);
+  if(!matches.length){suggList.classList.remove('open');return;}
+  suggList.innerHTML = matches.map(p =>
+    `<div class="sugg-item" onclick="selectPhone('${p.brand} ${p.model}')">${p.brand} ${p.model}</div>`
+  ).join('');
+  suggList.classList.add('open');
+});
+document.addEventListener('click', e => {
+  if(!e.target.closest('.search-wrap')) suggList.classList.remove('open');
+});
+searchInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') doSearch();
+});
+
+function selectPhone(name) {
+  searchInput.value = name;
+  suggList.classList.remove('open');
+  doSearch();
+}
+
+function doSearch() {
+  const q = searchInput.value.trim().toLowerCase();
+  suggList.classList.remove('open');
+  if(!q){return;}
+  const res = document.getElementById('sensiResult');
+  res.innerHTML = '<div class="loader">Searching...</div>';
+  setTimeout(() => {
+    const phone = PHONES.find(p => (p.brand+' '+p.model).toLowerCase().includes(q));
+    if(!phone){
+      res.innerHTML = `<div class="no-result"><div class="emoji">🔍</div><p>No results for "<strong>${searchInput.value}</strong>". Try a different model name.</p></div>`;
+      return;
+    }
+    const tierColors = {ultra:'#00ff88',high:getComputedStyle(document.documentElement).getPropertyValue('--ff-gold').trim(),mid:'var(--ff-orange)',low:'#888'};
+    const tierLabels = {ultra:'Ultra',high:'High-End',mid:'Mid-Range',low:'Budget'};
+    function classify(v){return v>=80?'high':v>=60?'mid':'low';}
+    res.innerHTML = `
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-icon">📱</div>
+          <div>
+            <div class="result-phone">${phone.brand} ${phone.model}</div>
+            <div class="result-chip">🔧 ${phone.chip} &nbsp;|&nbsp; <span style="color:${tierColors[phone.tier]}">${tierLabels[phone.tier]}</span></div>
+          </div>
+        </div>
+        <div class="sensi-grid">
+          <div class="sensi-item"><div class="sensi-label">General</div><div class="sensi-value ${classify(phone.general)}">${phone.general}</div></div>
+          <div class="sensi-item"><div class="sensi-label">Red Dot</div><div class="sensi-value ${classify(phone.redDot)}">${phone.redDot}</div></div>
+          <div class="sensi-item"><div class="sensi-label">2x Scope</div><div class="sensi-value ${classify(phone.scope2x)}">${phone.scope2x}</div></div>
+          <div class="sensi-item"><div class="sensi-label">4x Scope</div><div class="sensi-value ${classify(phone.scope4x)}">${phone.scope4x}</div></div>
+          <div class="sensi-item"><div class="sensi-label">AWM Scope</div><div class="sensi-value ${classify(phone.awm)}">${phone.awm}</div></div>
+          <div class="sensi-item"><div class="sensi-label">Review Rate</div><div class="sensi-value ${classify(Math.round((phone.general+phone.redDot+phone.scope2x)/3))}">${Math.round((phone.general+phone.redDot+phone.scope2x)/3)}</div></div>
+        </div>
+        <div class="sensi-tip">
+          <strong>💡 Pro Tip:</strong> These settings are optimized for <strong>${phone.chip}</strong> on the ${tierLabels[phone.tier]} tier. For best results, enable "4-Finger Claw" layout and set in-game graphics to <strong>${phone.tier==='ultra'||phone.tier==='high'?'Extreme + Ultra':'Medium + High'}</strong> FPS.
+          ${phone.general>=90?'<br><strong>🔥 This phone is Elite tier for Free Fire!</strong>':phone.general>=70?'<br><strong>✅ Great mid-range performance for Free Fire.</strong>':'<br><strong>⚠️ Budget device — keep settings low for stability.</strong>'}
+        </div>
+      </div>`;
+  }, 400);
+}
+
+// ============================================================
+// PHONE GRID
+// ============================================================
+function initPhoneGrid() {
+  const brands = ['All', ...new Set(PHONES.map(p => p.brand))].sort((a,b)=>a==='All'?-1:a.localeCompare(b));
+  const fb = document.getElementById('brandFilters');
+  fb.innerHTML = brands.map(b =>
+    `<button class="filter-chip${b==='All'?' active':''}" onclick="filterBrand('${b}',this)">${b}</button>`
+  ).join('');
+  document.getElementById('phoneCountBadge').textContent = `${PHONES.length} phones`;
+  renderPhones('all');
+}
+
+function filterBrand(brand, el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentBrandFilter = brand.toLowerCase();
+  renderPhones(currentBrandFilter);
+}
+
+function renderPhones(brand) {
+  const grid = document.getElementById('phoneGrid');
+  const filtered = brand==='all' ? PHONES : PHONES.filter(p => p.brand.toLowerCase()===brand);
+  grid.innerHTML = filtered.map(p => `
+    <div class="phone-card" onclick="selectPhone('${p.brand} ${p.model}');showSection('sensitivity')">
+      <div class="phone-brand">${p.brand}</div>
+      <div class="phone-name">${p.model}</div>
+      <div class="phone-chip-badge">${p.chip}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CHARACTER COMBOS
+// ============================================================
+function renderCombos(filter) {
+  const grid = document.getElementById('comboGrid');
+  const filtered = filter==='all' ? COMBOS : COMBOS.filter(c => c.type===filter);
+  grid.innerHTML = filtered.map(c => {
+    const stars = Array.from({length:5},(_,i)=>`<span class="rating-star${i<c.rating?' filled':''}">★</span>`).join('');
+    return `
+    <div class="combo-card ${c.type}">
+      <div class="combo-header">
+        <div class="combo-icon">${{rusher:'🗡️',sniper:'🎯',support:'💊',speed:'⚡',bomber:'💣'}[c.type]}</div>
+        <div>
+          <div class="combo-type">${c.type}</div>
+          <div style="font-weight:700;color:#fff;font-size:0.95rem;">${c.name}</div>
+          <div class="combo-desc-short">${c.shortDesc}</div>
+        </div>
+      </div>
+      <div class="combo-chars">
+        ${c.chars.map(ch=>`<span class="char-tag">👤 ${ch}</span>`).join('')}
+      </div>
+      <div class="combo-body">
+        <ul class="skill-list">
+          ${c.skills.map(s=>`<li><strong>${s.char} — ${s.skill}:</strong> ${s.desc}</li>`).join('')}
+        </ul>
+        <div style="margin-top:12px;padding:10px 12px;background:rgba(255,107,0,0.05);border-left:3px solid var(--ff-orange);border-radius:0 6px 6px 0;font-size:0.81rem;color:var(--ff-muted);line-height:1.6;">
+          <strong style="color:var(--ff-orange)">WHY IT WORKS:</strong> ${c.why}
+        </div>
+      </div>
+      <div class="combo-rating">${stars}<span class="rating-label">Power Rating</span></div>
+    </div>`;
+  }).join('');
+}
+
+function filterCombos(type) {
+  document.querySelectorAll('.combo-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-tab="${type}"]`).classList.add('active');
+  renderCombos(type);
+}
+
+// ============================================================
+// FEED
+// ============================================================
+function renderFeed() {
+  const container = document.getElementById('feedContainer');
+  const defaultPosts = [
+    {title:"Season OB48 Sensitivity Optimization Guide",type:"tip",content:"New OB48 patch changes movement physics slightly. Increase your general sensitivity by 3-5 points if you feel aiming is slower. Especially important for Snapdragon 778G and Helio G99 devices.",author:"Admin",time:"2 hours ago"},
+    {title:"New Character: Ines — Ability Breakdown",type:"update",content:"Ines (new character) has a passive that reduces bullet trail visibility. Best paired in a sniper combo to remain completely hidden. Works excellently with Rafael's Dead Silent.",author:"Admin",time:"5 hours ago"},
+    {title:"Double Diamond Event: Free Character Tokens",type:"event",content:"Claim free character tokens in the Double Diamond event running this weekend. Use them to unlock or upgrade Chrono and Alok for the Rusher combo.",author:"Admin",time:"1 day ago"},
+  ];
+  const allPosts = [...posts, ...defaultPosts];
+  if(!allPosts.length){
+    container.innerHTML = '<div class="no-result"><div class="emoji">📭</div><p>No posts yet. Check back later!</p></div>';
+    return;
+  }
+  const badgeMap = {tip:'badge-tip',update:'badge-update',event:'badge-event'};
+  container.innerHTML = allPosts.map(p => `
+    <div class="feed-item">
+      <div class="feed-meta">
+        <div class="feed-avatar">${(p.author||'A').charAt(0)}</div>
+        <div>
+          <div class="feed-author">${p.author||'Admin'}</div>
+          <div class="feed-time">${p.time||'Just now'}</div>
+        </div>
+        <span class="post-type-badge ${badgeMap[p.type]||'badge-tip'}" style="margin-left:auto;">${p.type||'tip'}</span>
+      </div>
+      <div class="feed-title">${p.title}</div>
+      <div class="feed-content">${p.content}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function initAdmin() {
+  if(adminLoggedIn){
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminPanel').classList.add('active');
+    renderAdminPosts();
+  }
+}
+
+function doAdminLogin() {
+  const u = document.getElementById('adminUser').value;
+  const p = document.getElementById('adminPass').value;
+  if(u==='admin' && p==='ffsensi123') {
+    adminLoggedIn = true;
+    document.getElementById('adminLogin').style.display='none';
+    document.getElementById('adminPanel').classList.add('active');
+    renderAdminPosts();
+  } else {
+    document.getElementById('adminError').style.display='block';
+    setTimeout(()=>document.getElementById('adminError').style.display='none',3000);
+  }
+}
+
+function adminLogout() {
+  adminLoggedIn = false;
+  document.getElementById('adminLogin').style.display='';
+  document.getElementById('adminPanel').classList.remove('active');
+  document.getElementById('adminUser').value='';
+  document.getElementById('adminPass').value='';
+}
+
+function submitPost() {
+  const title = document.getElementById('postTitle').value.trim();
+  const type = document.getElementById('postType').value;
+  const content = document.getElementById('postContent').value.trim();
+  if(!title||!content){showToast('⚠️ Fill in title and content!');return;}
+  const post = {title,type,content,author:'Admin',time:'Just now',id:Date.now()};
+  posts.unshift(post);
+  localStorage.setItem('ffsensi_posts', JSON.stringify(posts));
+  document.getElementById('postTitle').value='';
+  document.getElementById('postContent').value='';
+  document.getElementById('statPosts').textContent = posts.length;
+  renderAdminPosts();
+  showToast('✅ Post published successfully!');
+}
+
+function renderAdminPosts() {
+  const list = document.getElementById('adminPostList');
+  document.getElementById('statPosts').textContent = posts.length;
+  if(!posts.length){
+    list.innerHTML='<div style="color:var(--ff-muted);font-size:0.85rem;text-align:center;padding:20px;">No posts yet.</div>';
+    return;
+  }
+  const badgeMap = {tip:'badge-tip',update:'badge-update',event:'badge-event'};
+  list.innerHTML = posts.map((p,i) => `
+    <div class="post-item">
+      <div class="post-item-text">
+        <div class="post-item-title">${p.title}</div>
+        <div class="post-item-meta">${p.time}</div>
+      </div>
+      <span class="post-type-badge ${badgeMap[p.type]||'badge-tip'}">${p.type}</span>
+      <button class="del-btn" onclick="deletePost(${i})">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function deletePost(i) {
+  posts.splice(i,1);
+  localStorage.setItem('ffsensi_posts', JSON.stringify(posts));
+  renderAdminPosts();
+  showToast('🗑️ Post deleted.');
+}
+
+function addPhone() {
+  const brand=document.getElementById('newBrand').value.trim();
+  const model=document.getElementById('newModel').value.trim();
+  const chip=document.getElementById('newChip').value.trim();
+  const general=parseInt(document.getElementById('newGeneral').value)||70;
+  const redDot=parseInt(document.getElementById('newRedDot').value)||67;
+  const scope2x=parseInt(document.getElementById('new2x').value)||62;
+  const scope4x=parseInt(document.getElementById('new4x').value)||57;
+  const awm=parseInt(document.getElementById('newAWM').value)||50;
+  if(!brand||!model||!chip){showToast('⚠️ Fill brand, model, and chip!');return;}
+  PHONES.push({brand,model,chip,tier:'mid',general,redDot,scope2x,scope4x,awm});
+  document.getElementById('statPhones').textContent=PHONES.length+'+';
+  ['newBrand','newModel','newChip','newGeneral','newRedDot','new2x','new4x','newAWM'].forEach(id=>document.getElementById(id).value='');
+  showToast(`✅ ${brand} ${model} added to database!`);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
+</script>
+</body>
+</html>
